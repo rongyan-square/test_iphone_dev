@@ -10,6 +10,7 @@
 
 @interface TestToDoItem : NSObject
 
+// Definition of the property 
 @property NSString *itemName;
 @property BOOL completed;
 @property NSDate *creationDate;
