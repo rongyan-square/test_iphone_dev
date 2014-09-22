@@ -16,12 +16,28 @@
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (weak, nonatomic) IBOutlet UITextField *textField;
 @property (weak, nonatomic) IBOutlet UINavigationItem *addItemTitle;
+@property (weak, nonatomic) IBOutlet UISwitch *saveToAlbum;
 @property MPMoviePlayerController *videoController;
 
 @end
 
 @implementation TestAddToDoItemViewController
 // @synthesize textField;
+
+#pragma mark - Helper
+
+- (void)showAlert:(NSString*)title message:(NSString*)msg
+{
+    UIAlertView *myAlertView = [[UIAlertView alloc] initWithTitle:title
+                                                    message:msg
+                                                    delegate:nil
+                                                    cancelButtonTitle:@"OK"
+                                                    otherButtonTitles: nil];
+    
+    [myAlertView show];
+}
+
+#pragma mark - Initialization
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -86,13 +102,7 @@
 // Photo delegate
 - (IBAction)takePhoto:(id)sender {
     if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        UIAlertView *myAlertView = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                        message:@"Device has no camera"
-                                                        delegate:nil
-                                                        cancelButtonTitle:@"OK"
-                                                        otherButtonTitles: nil];
-        
-        [myAlertView show];
+        [self showAlert:@"Error" message:@"Device has no camera"];
         return;
     }
     
@@ -106,6 +116,11 @@
 }
 
 - (IBAction)selectPhoto:(id)sender {
+    if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
+        [self showAlert:@"Error" message:@"Device has no photo library"];
+        return;
+    }
+    
     UIImagePickerController *picker = [[UIImagePickerController alloc] init];
     picker.delegate = self;
     picker.allowsEditing = YES;
@@ -113,6 +128,22 @@
     picker.mediaTypes = [NSArray arrayWithObjects:(NSString *)kUTTypeMovie, (NSString *)kUTTypeImage, nil];
     
     [self presentViewController:picker animated:YES completion:NULL];
+}
+
+- (void)saveImageToAlbum:(UIImage*)image finishedSavingWithError:(NSError *) error contextInfo:(void *)contextInfo {
+    if (error) {
+        [self showAlert:@"Error" message:[error localizedDescription]];
+    } else {
+        [self showAlert:@"Success" message:@"This image is saved to your album"];
+    }
+}
+
+- (void)saveVideoToAlbum:(NSURL*)videoPath finishedSavingWithError:(NSError *) error contextInfo:(void *)contextInfo {
+    if (error) {
+        [self showAlert:@"Error" message:[error localizedDescription]];
+    } else {
+        [self showAlert:@"Success" message:@"This video is saved to your album"];
+    }
 }
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
@@ -128,9 +159,26 @@
         [self.view addSubview:self.videoController.view];
         
         [self.videoController play];
+        
+        if ([self.saveToAlbum isOn] && picker.sourceType == UIImagePickerControllerSourceTypeCamera) {
+            NSString *videoPath = [videoURL path];
+            if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(videoPath)) {
+                UISaveVideoAtPathToSavedPhotosAlbum(videoPath,
+                                                    self,
+                                                    @selector(saveVideoToAlbum:finishedSavingWithError:contextInfo:),
+                                                    nil);
+            }
+        }
     } else {
         UIImage *chosenImage = info[UIImagePickerControllerEditedImage];
         self.imageView.image = chosenImage;
+        // save the image to album
+        if ([self.saveToAlbum isOn] && picker.sourceType == UIImagePickerControllerSourceTypeCamera) {
+            UIImageWriteToSavedPhotosAlbum(chosenImage,
+                                           self,
+                                           @selector(saveImageToAlbum:finishedSavingWithError:contextInfo:),
+                                           nil);
+        }
     }
     
     /* NSURL *videoURl = [NSURL fileURLWithPath:videoPath];
