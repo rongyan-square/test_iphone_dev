@@ -118,6 +118,17 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="608-LO-dwf">
+                                <rect key="frame" x="224" y="421" width="51" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </switch>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Save to Album " lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="lhN-u5-Dum">
+                                <rect key="frame" x="56" y="426" width="117" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -138,6 +149,7 @@
                         <outlet property="creationDate" destination="83c-kk-EU4" id="OyD-IQ-yFZ"/>
                         <outlet property="doneButton" destination="QRB-XX-CM4" id="uMe-eV-VHy"/>
                         <outlet property="imageView" destination="Qhn-an-u0w" id="Iia-pa-zqr"/>
+                        <outlet property="saveToAlbum" destination="608-LO-dwf" id="gv2-JX-ETN"/>
                         <outlet property="textField" destination="cph-KL-KaD" id="TUe-Va-fQS"/>
                     </connections>
                 </viewController>
